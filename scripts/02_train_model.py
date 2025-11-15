@@ -20,7 +20,7 @@ def train_model(opt):
             imgsz=opt.imgsz,
             batch=opt.batch,
             device=device,
-            name=opt.name  # Nome da pasta de resultados em 'runs/detect/'
+            name=opt.name,  # Nome da pasta de resultados em 'runs/detect/'
             degrees=0.0,  # Sem rotação aleatória
             flipud=0.0,   # Sem flip vertical (upside-down)
             fliplr=0.0    # Sem flip horizontal (opcional, mas recomendado)
@@ -56,13 +56,13 @@ def main():
     parser.add_argument(
         "--batch", 
         type=int, 
-        default=8, 
+        default=16, 
         help="Batch size (ajuste conforme a VRAM da sua GPU)"
     )
     parser.add_argument(
         "--imgsz", 
         type=int, 
-        default=640, 
+        default=1280, 
         help="Tamanho da imagem para treinamento"
     )
     parser.add_argument(

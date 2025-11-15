@@ -21,6 +21,9 @@ def train_model(opt):
             batch=opt.batch,
             device=device,
             name=opt.name  # Nome da pasta de resultados em 'runs/detect/'
+            degrees=0.0,  # Sem rotação aleatória
+            flipud=0.0,   # Sem flip vertical (upside-down)
+            fliplr=0.0    # Sem flip horizontal (opcional, mas recomendado)
         )
         
         print("Treinamento concluído.")
@@ -47,7 +50,7 @@ def main():
     parser.add_argument(
         "--epochs", 
         type=int, 
-        default=100, 
+        default=30, 
         help="Número de épocas para treinar"
     )
     parser.add_argument(

@@ -1,0 +1,12 @@
+# Caminhos relativos ao arquivo YAML (precisa voltar um nível)
+train: ../datasets/treino/images
+val: ../datasets/validacao/images
+# test: ../datasets/teste/images
+
+# Definições das classes
+nc: 35
+names:
+  [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+    'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U',
+    'V', 'W', 'X', 'Y', 'Z' ]

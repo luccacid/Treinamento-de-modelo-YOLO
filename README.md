@@ -1,0 +1,155 @@
+# Documentação do Pipeline YOLO — Organização, Treinamento, Validação e Limpeza
+
+Este documento descreve o funcionamento e o uso dos quatro scripts do pipeline para preparar, treinar e validar modelos YOLO com datasets customizados.
+
+---
+
+# `01_organize_dataset.py`
+
+### Função
+
+Organizar automaticamente a estrutura do dataset no formato esperado pelo YOLO:
+
+```
+datasets/
+ ├── treino/
+ │    ├── images/
+ │    └── labels/
+ ├── validacao/
+ │    ├── images/
+ │    └── labels/
+ └── teste/
+      ├── images/
+      └── labels/
+```
+
+### O que o script faz
+
+* Move imagens (`.jpg`, `.jpeg`, `.png`) para a pasta `images/`
+* Move arquivos de labels (`.txt`) para a pasta `labels/`
+* Cria as pastas necessárias, caso não existam
+* Ignora arquivos que não sejam imagens ou labels
+
+### Como executar
+
+```bash
+python 01_organize_dataset.py --path datasets
+```
+
+### Argumentos
+
+| Argumento | Padrão     | Descrição                                         |
+| --------- | ---------- | ------------------------------------------------- |
+| `--path`  | `datasets` | Caminho contendo as pastas treino/validacao/teste |
+
+---
+
+# `02_train_model.py`
+
+### Função
+
+Treinar modelos YOLO (v8/v9) usando a biblioteca Ultralytics.
+
+### O que o script faz
+
+* Detecta automaticamente GPU (CUDA) ou utiliza CPU
+* Carrega o modelo base informado
+* Executa o treinamento com parâmetros configuráveis
+* Salva os resultados em `runs/detect/<name>/`
+
+### Como executar
+
+```bash
+python 02_train_model.py \
+  --model yolov9m.pt \
+  --data data/dataset.yaml \
+  --epochs 100 \
+  --batch 8 \
+  --imgsz 640 \
+  --name placa_v9m
+```
+
+### Argumentos
+
+| Argumento  | Padrão              | Descrição                              |
+| ---------- | ------------------- | -------------------------------------- |
+| `--model`  | yolov9m.pt          | Modelo base ou checkpoint              |
+| `--data`   | data/dataset.yaml   | Caminho para o arquivo YAML do dataset |
+| `--epochs` | 100                 | Número de épocas                       |
+| `--batch`  | 8                   | Tamanho do lote                        |
+| `--imgsz`  | 640                 | Tamanho das imagens                    |
+| `--name`   | license_plate_train | Nome do experimento dentro de `runs/`  |
+
+---
+
+# `03_validate_model.py`
+
+### Função
+
+Validar um modelo YOLO treinado para gerar métricas como mAP, precisão e recall.
+
+### O que o script faz
+
+* Detecta automaticamente GPU ou CPU
+* Carrega o modelo informado
+* Executa a validação com os parâmetros fornecidos
+* Salva os resultados em `runs/val/<name>/`
+
+### Como executar
+
+```bash
+python 03_validate_model.py \
+  --model runs/detect/placa_v9m/weights/best.pt \
+  --data data/dataset.yaml \
+  --batch 16 \
+  --imgsz 640 \
+  --name placa_v9m_val
+```
+
+### Argumentos
+
+| Argumento | Obrigatório | Descrição                                  |
+| --------- | ----------- | ------------------------------------------ |
+| `--model` | Sim         | Caminho para `best.pt` ou outro checkpoint |
+| `--data`  | Não         | Caminho para o YAML do dataset             |
+| `--batch` | Não         | Tamanho do lote                            |
+| `--imgsz` | Não         | Tamanho das imagens                        |
+| `--name`  | Não         | Nome da pasta de resultados                |
+
+---
+
+# `04_clear_dataset.py`
+
+### Função
+
+Limpar arquivos do dataset e remover caches criados pelo YOLO.
+
+### O que o script faz
+
+* Deleta imagens (`.jpg`, `.jpeg`, `.png`, `.bmp`, `.webp`)
+* Deleta labels `.txt`
+* Remove todos os arquivos `.cache` dentro do dataset
+* Oferece modo de simulação (dry-run)
+* Permite pular confirmações com o parâmetro `-y`
+
+### Como executar
+
+Simulação (não deleta nada):
+
+```bash
+python 04_clear_dataset.py --dry-run
+```
+
+Limpeza real:
+
+```bash
+python 04_clear_dataset.py -y
+```
+
+### Argumentos
+
+| Argumento     | Descrição                                |
+| ------------- | ---------------------------------------- |
+| `--path`      | Caminho da pasta base do dataset         |
+| `--dry-run`   | Apenas mostra o que seria removido       |
+| `-y`, `--yes` | Executa a exclusão sem pedir confirmação |

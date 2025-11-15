@@ -153,3 +153,105 @@ python 04_clear_dataset.py -y
 | `--path`      | Caminho da pasta base do dataset         |
 | `--dry-run`   | Apenas mostra o que seria removido       |
 | `-y`, `--yes` | Executa a exclusão sem pedir confirmação |
+Aqui está a **seção adicional em Markdown** explicando o `dataset.yaml`, no mesmo estilo do seu documento atual (sem emojis, direto, técnico e consistente):
+
+---
+
+# `dataset.yaml`
+
+### Função
+
+Definir os caminhos do dataset e a lista de classes usadas pelo YOLO durante o treinamento, validação e teste.
+
+### Estrutura do arquivo
+
+```yaml
+# Caminhos relativos ao arquivo YAML (precisa voltar um nível)
+train: ../datasets/treino/images
+val: ../datasets/validacao/images
+# test: ../datasets/teste/images
+
+# Definições das classes
+nc: 35
+names:
+  [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+    'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U',
+    'V', 'W', 'X', 'Y', 'Z' ]
+```
+
+---
+
+## Campos
+
+### `train`
+
+```
+train: ../datasets/treino/images
+```
+
+Caminho para a pasta contendo as imagens de treino.
+Os arquivos de label correspondentes devem estar em:
+
+```
+../datasets/treino/labels
+```
+
+---
+
+### `val`
+
+```
+val: ../datasets/validacao/images
+```
+
+Caminho das imagens usadas na validação do modelo.
+Labels devem estar em:
+
+```
+../datasets/validacao/labels
+```
+
+---
+
+### `test` (opcional)
+
+```
+# test: ../datasets/teste/images
+```
+
+Caminho das imagens de teste.
+Rotulado como opcional e, por isso, comentado.
+Se ativado, os labels devem estar em:
+
+```
+../datasets/teste/labels
+```
+
+---
+
+### `nc`
+
+```
+nc: 35
+```
+
+Número total de classes do dataset.
+Deve corresponder exatamente ao total de itens em `names`.
+
+---
+
+### `names`
+
+Lista das classes usadas nos arquivos de label `.txt`.
+
+A lista indica qual string textual corresponde ao índice numérico usado nos labels YOLO.
+
+Exemplo:
+Se um arquivo `.txt` tiver a classe `4`, ela se refere a:
+
+```
+names[4] → '4'
+```
+
+A ordem é obrigatória e não pode ser alterada sem ajustar os labels.

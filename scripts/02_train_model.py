@@ -1,36 +1,29 @@
-import torch 
 import argparse
+
+import torch
 from ultralytics import YOLO
 
+
 def train_model(opt):
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"Usando dispositivo: {device}")
 
-    try:
-        # Detecta dispositivo (CUDA ou CPU)
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-        print(f"Usando dispositivo: {device}")
-
-
-        model = YOLO(opt.model)
-
-        # Inicia o treinamento
-        print(f"Iniciando treinamento com data='{opt.data}' para {opt.epochs} épocas...")
-        model.train(
-            data=opt.data,
-            epochs=opt.epochs,
-            imgsz=opt.imgsz,
-            batch=opt.batch,
-            device=device,
-            name=opt.name,  # Nome da pasta de resultados em 'runs/detect/'
-            degrees=0.0,  # Sem rotação aleatória
-            flipud=0.0,   # Sem flip vertical (upside-down)
-            fliplr=0.0    # Sem flip horizontal (opcional, mas recomendado)
-        )
-        
-        print("Treinamento concluído.")
-        print(f"Resultados salvos em: runs/detect/{opt.name}")
-
-    except Exception as e:
-        print(f"Ocorreu um erro inesperado durante o treinamento: {e}")
+    model = YOLO(opt.model)
+    print(f"Iniciando treinamento com data='{opt.data}' por {opt.epochs} épocas...")
+    # Para placas de carro o objeto tem orientação fixa: desligamos rotação e
+    # flips para não gerar amostras impossíveis (placa de cabeça para baixo).
+    model.train(
+        data=opt.data,
+        epochs=opt.epochs,
+        imgsz=opt.imgsz,
+        batch=opt.batch,
+        device=device,
+        name=opt.name,
+        degrees=0.0,
+        flipud=0.0,
+        fliplr=0.0,
+    )
+    print(f"Treinamento concluído. Resultados em: runs/detect/{opt.name}")
 
 def main():
     parser = argparse.ArgumentParser(description="Script de Treinamento YOLOv8")

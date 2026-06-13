@@ -1,36 +1,25 @@
-import torch
 import argparse
+
+import torch
 from ultralytics import YOLO
 
+
 def validate(opt):
-    """
-    Carrega um modelo YOLO treinado e executa a validação.
-    """
-    try:
-        # Detecta dispositivo (CUDA ou CPU)
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-        print(f"Usando dispositivo: {device}")
+    """Carrega um modelo YOLO treinado e executa a validação."""
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"Usando dispositivo: {device}")
 
-        # Carrega o modelo
-        model = YOLO(opt.model)
-
-        # Inicia a validação
-        print(f"Iniciando validação com data='{opt.data}' e imgsz={opt.imgsz}...")
-        results = model.val(
-            data=opt.data,
-            imgsz=opt.imgsz,
-            batch=opt.batch,
-            device=device,
-            name=opt.name  # Nome da pasta de resultados em 'runs/val/'
-        )
-        
-        print("Validação concluída.")
-        print(results)
-
-    except FileNotFoundError as e:
-        print(f"Erro: Arquivo não encontrado. {e}")
-    except Exception as e:
-        print(f"Ocorreu um erro inesperado: {e}")
+    model = YOLO(opt.model)
+    print(f"Iniciando validação com data='{opt.data}' e imgsz={opt.imgsz}...")
+    results = model.val(
+        data=opt.data,
+        imgsz=opt.imgsz,
+        batch=opt.batch,
+        device=device,
+        name=opt.name,
+    )
+    print("Validação concluída.")
+    print(results)
 
 def main():
     parser = argparse.ArgumentParser(description="Script de Validação YOLO")

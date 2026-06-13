@@ -205,3 +205,9 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# YOLO: saidas de treino, pesos e datasets pesados
+runs/
+*.pt
+datasets/**/images/
+datasets/**/labels/
